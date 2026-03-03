@@ -1,34 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import CustomSelect, { type Option } from "./components/CustomSelect/CustomSelect";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const dummyData: Option[] = [
+    { label: "Apple", value: "apple" },
+    { label: "Banana", value: "banana" },
+    { label: "Orange", value: "orange" },
+    { label: "Mango", value: "mango" },
+    { label: "Pineapple", value: "pineapple" },
+  ];
+
+  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
+
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="flex items-center justify-center min-h-screen py-30">
+      <div className="space-y-4">
+        <h1>Custom React Select with Search inside dropdown</h1>
+        <CustomSelect
+          label="Select a Fruit"
+          options={dummyData}
+          value={selectedOption}
+          onChange={setSelectedOption}
+          isSearchable={false}
+          enableCustomSearch
+        />
+
+        <div>
+          <strong>Selected:</strong> {selectedOption?.label || "None"}
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 
