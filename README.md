@@ -1,73 +1,31 @@
-# React + TypeScript + Vite
+# Custom React Select with Dropdown Search
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A robust, Tailwind-styled wrapper around `react-select` that relocates the search input from the main control into the dropdown menu itself. 
 
-Currently, two official plugins are available:
+## The Problem
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+By default, `react-select` places the search input inline within the main control. If your UX dictates a standard button trigger that opens a separate menu containing the search input, simply overriding the `MenuList` component often leads to complex bugs:
+1. **Focus Loss:** React destroys and recreates the input on every keystroke due to internal re-renders.
+2. **Event Bubbling:** Clicking the custom input triggers `react-select`'s "click outside" listeners, prematurely closing the menu.
 
-## React Compiler
+## The Solution
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+This component abandons the hacky `MenuList` override in favor of a **Controlled Popover Pattern**. 
+It utilizes a custom trigger button, a fixed-position background blanket for "click-outside" detection, and a purely search-driven `react-select` instance inside the popover. It leverages the modern `unstyled` prop and `classNames` API from `react-select` for complete Tailwind CSS integration.
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Isolated Search:** Search input is strictly contained within the dropdown menu.
+- **Stable Focus:** Prevents the input unmounting/focus-loss bugs common in `react-select` hacks.
+- **Tailwind Native:** Uses `react-select`'s `unstyled` API for 100% Tailwind CSS styling without overriding default classes.
+- **Component Injection:** Fully supports `react-select`'s `components` API (e.g., passing custom `<Option />` or `<SingleValue />` components).
+- **Multi-select Support:** Handles both single and multi-value selections seamlessly.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Dependencies
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Ensure you have `react-select` installed, and Tailwind CSS configured in your project.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+```bash
+npm install react-select
+# or
+yarn add react-select
